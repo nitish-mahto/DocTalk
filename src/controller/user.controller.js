@@ -22,7 +22,7 @@ const otpVerify = async (req, res) => {
     }
 
     let otp = await tokenSchema
-      .findOne({ token: phoneNumber.token })
+      .findOne({ token: req.body.token })
       .lean()
       .exec();
 
@@ -232,7 +232,6 @@ const doctorProfile = async (req, res) => {
       status: true,
       data: doctor,
     });
-
   } catch (error) {
     return res.status(404).json({
       status: false,
