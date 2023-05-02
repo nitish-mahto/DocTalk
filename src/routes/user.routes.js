@@ -30,5 +30,6 @@ router.get("/test", userController.test);
 router.post("/register", userController.register);
 router.post("/otpVerify", userController.otpVerify);
 router.post("/login", userController.login);
+router.get("/doctorProfile", AuthValidator, userController.doctorProfile);
 
 module.exports = router;

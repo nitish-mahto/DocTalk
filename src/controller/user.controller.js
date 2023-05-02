@@ -111,7 +111,7 @@ const register = async (req, res) => {
     const { token } = await generateJWT(user);
 
     try {
-      var OTP = Math.round(Math.random() * (9999 - 1000) + 1000);
+      var OTP = Math.round(Math.random() * (999999 - 100000) + 100000);
 
       var data = new tokenSchema({
         phoneNumber: req.body.phoneNumber,
@@ -133,7 +133,7 @@ const register = async (req, res) => {
   } catch (err) {
     console.log("Error: " + err.message);
     return res.status(500).json({
-      status: "error",
+      status: false,
       message: err.message,
     });
   }
@@ -206,9 +206,45 @@ const login = async (req, res) => {
   }
 };
 
+const doctorProfile = async (req, res) => {
+  try {
+    let doctor = await User.findById({ _id: req.user_id }).lean().exec();
+
+    if (!doctor) {
+      return res.status(404).json({
+        status: false,
+        message: "Doctor does not exist",
+      });
+    }
+
+    doctor = await User.findById({ _id: req.user_id })
+      .select({
+        name: 1,
+        email: 1,
+        organizationName: 1,
+        phoneNumber: 1,
+        countryCode: 1,
+      })
+      .lean()
+      .exec();
+
+    res.status(200).json({
+      status: true,
+      data: doctor,
+    });
+
+  } catch (error) {
+    return res.status(404).json({
+      status: false,
+      message: "Doctor does not exist",
+    });
+  }
+};
+
 module.exports = {
   test,
   register,
   otpVerify,
   login,
+  doctorProfile,
 };
